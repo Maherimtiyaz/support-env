@@ -1,11 +1,8 @@
-# app.py
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
 
-app = FastAPI(title="SupportEnv API")
+app = FastAPI()
 
-# Allow requests from any frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,28 +11,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Dummy environments for tasks
 ENVIRONMENTS = {
     "easy": {"state": 0},
     "medium": {"state": 0},
     "hard": {"state": 0},
 }
 
+@app.get("/")
+def root():
+    return {"message": "SupportEnv running"}
+
 @app.get("/reset")
-def reset(task: str = Query(..., description="Task to reset: easy/medium/hard")):
+@app.post("/reset")
+def reset(task: str = "easy"):
     if task not in ENVIRONMENTS:
         raise HTTPException(status_code=404, detail="Task not found")
+
     ENVIRONMENTS[task]["state"] = 0
-    return {"observation": f"Task {task} reset.", "reward": 0, "done": False}
+
+    return {
+        "observation": f"Task {task} reset.",
+        "reward": 0,
+        "done": False
+    }
 
 @app.post("/step")
-def step(task: str = Query(..., description="Task name: easy/medium/hard"),
-         action: Optional[str] = Query(None, description="Action to take")):
+def step(data: dict = Body(...)):
+    task = data.get("task", "easy")
+    action = data.get("action", "")
+
     if task not in ENVIRONMENTS:
         raise HTTPException(status_code=404, detail="Task not found")
-    
-    # Increment dummy state
+
     ENVIRONMENTS[task]["state"] += 1
+
     done = ENVIRONMENTS[task]["state"] >= 5
     reward = 1 if not done else 10
 
@@ -44,7 +53,3 @@ def step(task: str = Query(..., description="Task name: easy/medium/hard"),
         "reward": reward,
         "done": done
     }
-
-@app.get("/")
-def root():
-    return {"message": "SupportEnv running. Use /reset?task=... or /step"}
