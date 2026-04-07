@@ -1,6 +1,15 @@
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
+import gradio as gr
+from inference import run_task
 
+def main():
+    iface = gr.Interface(fn=run_task, inputs="text", outputs="text")
+    iface.launch(server_name="0.0.0.0", server_port=7860)
+
+if __name__ == "__main__":
+    main()
+    
 app = FastAPI()
 
 app.add_middleware(
