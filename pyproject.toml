@@ -20,3 +20,6 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["."]
 exclude = ["tests", "data"]
+
+[project.scripts]
+server = "app:main"  # points to app.py's main function
