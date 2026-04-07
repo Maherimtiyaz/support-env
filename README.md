@@ -1,81 +1,27 @@
+---
+title: SupportEnv – AI Customer Support Simulator
+emoji: 🤖
+colorFrom: blue
+colorTo: green
+sdk: docker
+sdk_version: '1.0'
+app_file: app.py
+pinned: false
+---
+
 # 🧠 SupportEnv: AI Customer Support Simulation Environment
 
 ## 🚀 Overview
+SupportEnv is an AI-powered environment for simulating customer support tasks.  
+It allows testing agents on **three difficulty levels**: `easy`, `medium`, and `hard`.  
+Built with **FastAPI + Docker**, fully reproducible, and hackathon-ready.  
 
-SupportEnv is a realistic simulation environment designed to evaluate AI agents on customer support tasks.
+## ⚡ Endpoints
 
-Agents must:
-- Understand user issues
-- Classify intent
-- Respond appropriately
-- Handle emotional context
-- Resolve efficiently
+Your Space exposes the following endpoints:
 
----
+### 1️⃣ Reset Environment
 
-## 🌍 Real-World Motivation
-
-Customer support automation is critical for:
-- Reducing operational costs
-- Improving response times
-- Enhancing user satisfaction
-
-This environment simulates real-world ticket workflows with multi-step reasoning.
-
----
-
-## 🎯 Objective
-
-Maximize ticket resolution quality while minimizing steps and handling user emotions correctly.
-
----
-
-## 🔧 Action Space
-
-| Action | Description |
-|------|------------|
-| classify | Identify user intent |
-| respond | Provide solution |
-| ask_clarification | Request more info |
-| escalate | Transfer to human |
-
----
-
-## 👁️ Observation Space
-
-- Ticket text
-- Conversation history
-- User mood (neutral / angry)
-- Current status (open / resolved / escalated)
-
----
-
-## 🧠 Reward Design
-
-Agents are rewarded for:
-- Correct classification
-- Providing valid solutions
-- Efficient resolution
-- Handling emotional users properly
-
-Penalties for:
-- Incorrect actions
-- Excessive steps
-- Poor response tone
-
----
-
-## 🧪 Tasks
-
-| Difficulty | Description |
-|----------|------------|
-| Easy | Simple intent detection |
-| Medium | Requires reasoning |
-| Hard | Multi-condition + emotional handling |
-
----
-
-## ⚙️ Setup
-
+**Example:**  
 ```bash
-pip install -r requirements.txt
+curl -X GET "https://huggingface.co/spaces/madameM/support-env/resolve/reset?task=easy"
