@@ -66,8 +66,8 @@ CLEANUP_FILES=()
 cleanup() { rm -f "${CLEANUP_FILES[@]+"${CLEANUP_FILES[@]}"}"; }
 trap cleanup EXIT
 
-PING_URL="https://madamem-hf-space-support-env.hf.space"
-REPO_DIR="."
+PING_URL="${1:-}"
+REPO_DIR="${2:-.}"
 
 if [ -z "$PING_URL" ]; then
   printf "Usage: %s <ping_url> [repo_dir]\n" "$0"
