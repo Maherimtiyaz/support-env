@@ -1,46 +1,45 @@
+# test_space.py
 import requests
 
-BASE_URL = "https://huggingface.co/spaces/madameM/support-env/api"
+# Set this to your HF Space URL
+BASE_URL = "https://madameM-hf-space-support-env.hf.space"
+
 TASKS = ["easy", "medium", "hard"]
 
-def reset_env(task_name):
-    url = f"{BASE_URL}/reset?task={task_name}"
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
-        print(f"Error resetting {task_name} task: {e}")
-        return None
+def reset_env(task):
+    url = f"{BASE_URL}/reset"
+    params = {"task": task}
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+    return response.json()
 
-def step_env(task_name, action):
+def step_env(task, action="default_action"):
     url = f"{BASE_URL}/step"
-    payload = {"task": task_name, "action": action}
-    try:
-        response = requests.post(url, json=payload)
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
-        print(f"Error stepping {task_name} task: {e}")
-        return None
+    params = {"task": task, "action": action}
+    response = requests.post(url, params=params)
+    response.raise_for_status()
+    return response.json()
 
-def run_task(task_name):
-    print(f"\n--- Running {task_name} task ---")
-    obs = reset_env(task_name)
-    if not obs:
-        print(f"Skipping {task_name} due to reset error.")
+def run_task(task):
+    print(f"\n--- Running {task} task ---")
+    try:
+        obs = reset_env(task)
+        print("Initial observation:", obs)
+    except requests.HTTPError as e:
+        print(f"Error resetting {task} task:", e)
         return
 
-    print(f"Initial observation: {obs}")
-
-    # Example loop of 3 steps
-    for i in range(3):
-        action = f"action_{i+1}"
-        result = step_env(task_name, action)
-        if not result:
-            print(f"Step {i+1} failed.")
+    done = False
+    step_num = 0
+    while not done:
+        step_num += 1
+        try:
+            step_resp = step_env(task)
+            print(f"Step {step_num}:", step_resp)
+            done = step_resp.get("done", False)
+        except requests.HTTPError as e:
+            print(f"Error stepping {task} task:", e)
             break
-        print(f"Step {i+1} result: {result}")
 
 def main():
     for task in TASKS:

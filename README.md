@@ -24,4 +24,24 @@ Your Space exposes the following endpoints:
 
 **Example:**  
 ```bash
-curl -X GET "https://huggingface.co/spaces/madameM/support-env/resolve/reset?task=easy"
+curl -X GET "http://localhost:8000/reset?task=easy"
+```
+
+## 🧪 Running Tests Locally
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Start the local server:
+   ```bash
+   uvicorn app:app --reload
+   ```
+
+3. In another terminal, run the test script:
+   ```bash
+   python test_space.py
+   ```
+
+Note: If you run the API on a different port, update `BASE_URL` in `test_space.py`.

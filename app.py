@@ -5,7 +5,7 @@ from typing import Optional
 
 app = FastAPI(title="SupportEnv API")
 
-# Allow requests from HF frontend
+# Allow requests from any frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,7 +14,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Dummy environment for testing
+# Dummy environments for tasks
 ENVIRONMENTS = {
     "easy": {"state": 0},
     "medium": {"state": 0},
@@ -29,13 +29,16 @@ def reset(task: str = Query(..., description="Task to reset: easy/medium/hard"))
     return {"observation": f"Task {task} reset.", "reward": 0, "done": False}
 
 @app.post("/step")
-def step(task: str, action: Optional[str] = None):
+def step(task: str = Query(..., description="Task name: easy/medium/hard"),
+         action: Optional[str] = Query(None, description="Action to take")):
     if task not in ENVIRONMENTS:
         raise HTTPException(status_code=404, detail="Task not found")
-    # Dummy step logic
+    
+    # Increment dummy state
     ENVIRONMENTS[task]["state"] += 1
     done = ENVIRONMENTS[task]["state"] >= 5
     reward = 1 if not done else 10
+
     return {
         "observation": f"Step {ENVIRONMENTS[task]['state']} in {task}",
         "reward": reward,
