@@ -1,0 +1,15 @@
+name: support-env
+version: 1.0
+
+description: >
+  A realistic customer support simulation environment where agents must classify,
+  respond, and resolve tickets efficiently with emotional awareness.
+
+entrypoint: env.environment:SupportEnv
+
+tasks:
+  - easy_ticket
+  - medium_ticket
+  - hard_ticket
+
+author: your_team_name

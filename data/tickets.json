@@ -1,0 +1,20 @@
+[
+  {
+    "ticket": "I forgot my password",
+    "intent": "password_reset",
+    "solution": "reset your password using the link",
+    "user_mood": "neutral"
+  },
+  {
+    "ticket": "I was charged twice for my order",
+    "intent": "billing_issue",
+    "solution": "we will refund the duplicate charge",
+    "user_mood": "neutral"
+  },
+  {
+    "ticket": "The app freezes after uploading a file on mobile data",
+    "intent": "technical_bug",
+    "solution": "switch network or update the app",
+    "user_mood": "angry"
+  }
+]
