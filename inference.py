@@ -105,7 +105,13 @@ Respond concisely.
         try:
             score = grade_task(env.state)
         except Exception:
-            score = 0
+            score = 0.01
+
+        # Ensuring valid range
+        if score <= 0:
+            score = 0.01
+        elif score >= 1:
+            score = 0.99
 
         print(f"[END] task={task_name} score={score} steps={steps_taken}", flush=True)
 
