@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from openai import OpenAI
 
 from env.environment import SupportEnv
@@ -11,6 +12,7 @@ from tasks.easy_ticket import TASK as EASY
 from tasks.medium_ticket import TASK as MEDIUM
 from tasks.hard_ticket import TASK as HARD
 
+load_dotenv()
 
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
