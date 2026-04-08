@@ -20,7 +20,7 @@ from tasks.hard_ticket import TASK as HARD
 # Load environment variables
 load_dotenv()
 
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("API_KEY")
 base_url = os.getenv("API_BASE_URL")
 MODEL = os.getenv("MODEL_NAME", "gpt-4o-mini")
 
