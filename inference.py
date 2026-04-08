@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-# Safe import of OpenAI
+# Safe import
 try:
     from openai import OpenAI
 except Exception:
@@ -17,15 +17,14 @@ from tasks.easy_ticket import TASK as EASY
 from tasks.medium_ticket import TASK as MEDIUM
 from tasks.hard_ticket import TASK as HARD
 
-# Load env variables (safe)
+# Load environment variables
 load_dotenv()
 
-# Safe config
 api_key = os.getenv("OPENAI_API_KEY")
 base_url = os.getenv("API_BASE_URL")
 MODEL = os.getenv("MODEL_NAME", "gpt-4o-mini")
 
-# Initialize client safely
+# Safe client initialization
 client = None
 if OpenAI and api_key:
     try:
@@ -35,7 +34,6 @@ if OpenAI and api_key:
 
 
 def safe_fallback_action():
-    """Fallback action when model is unavailable"""
     return Action(
         action_type="respond",
         content="I'm here to help you. Could you please provide more details?"
@@ -47,9 +45,13 @@ def run_task(task_name, task):
         env = SupportEnv(task)
         obs = env.reset()
 
-        print(f"\n--- Running {task_name.upper()} TASK ---")
+        print(f"[START] task={task_name}", flush=True)
+
+        steps_taken = 0
 
         for step in range(10):
+            steps_taken += 1
+
             try:
                 prompt = f"""
 You are an AI customer support agent.
@@ -71,7 +73,6 @@ Choose ONE action:
 Respond concisely.
 """
 
-                
                 if client is None:
                     action = safe_fallback_action()
                 else:
@@ -87,19 +88,16 @@ Respond concisely.
                     except Exception:
                         action = safe_fallback_action()
 
-            except Exception as e:
-                print("Model error:", e)
+            except Exception:
                 action = safe_fallback_action()
 
             try:
                 obs, reward, done, info = env.step(action)
-            except Exception as e:
-                print("Env step error:", e)
+            except Exception:
                 break
 
-            print(f"Step {step+1}")
-            print("Action:", action)
-            print("Reward:", reward, "| Info:", info)
+            # REQUIRED structured output
+            print(f"[STEP] step={steps_taken} reward={reward}", flush=True)
 
             if done:
                 break
@@ -109,12 +107,12 @@ Respond concisely.
         except Exception:
             score = 0
 
-        print(f"{task_name.upper()} SCORE:", score)
+        print(f"[END] task={task_name} score={score} steps={steps_taken}", flush=True)
 
         return score
 
-    except Exception as e:
-        print(f"Task {task_name} failed:", e)
+    except Exception:
+        print(f"[END] task={task_name} score=0 steps=0", flush=True)
         return 0
 
 
@@ -128,13 +126,10 @@ def main():
 
         final_score = sum(scores.values()) / len(scores)
 
-        print("\n==============================")
-        print("FINAL SCORES:", scores)
-        print("FINAL SCORE:", final_score)
-        print("==============================")
+        print(f"[FINAL] score={final_score}", flush=True)
 
-    except Exception as e:
-        print("Fatal error in main:", e)
+    except Exception:
+        print("[FINAL] score=0", flush=True)
 
 
 if __name__ == "__main__":
